@@ -8,6 +8,8 @@ dynamodb = boto3.resource('dynamodb')
 url = 'http://178.254.23.111/~pub/DN/DN_masternode_payments_stats.html'
 block_reward = 9 #Reward of stakers + masternodes
 masternodes_cost = "10000"
+blocks_per_day = 1440
+blocks_per_month = blocks_per_day  * 30.4368499
 
 def masternodes(event, context):
 	
@@ -105,18 +107,22 @@ def masternodes(event, context):
 	elif masternodes_rate <= 0.987 : masternodes_reward = block_reward * 0.06
 	elif masternodes_rate <= 0.99 : masternodes_reward = block_reward * 0.05
 	else : masternodes_reward = block_reward * 0.01
-
+	
+	masternodes_monthly_revenue = float(blocks_per_month * masternodes_reward) / float(masternodes_count)
+	masternodes_reward_waiting_time = float(masternodes_count) / float(blocks_per_day)
 
 	table.update_item(
 		Key={
 			'coin': 'PIVX'
 		},
-		UpdateExpression="set masternodes_count = :m, available_supply = :s, masternodes_reward = :r, masternodes_cost = :c ",
+		UpdateExpression="set masternodes_count = :m, available_supply = :s, masternodes_reward = :r, masternodes_cost = :c, masternodes_monthly_revenue = :v, masternodes_reward_waiting_time = :w ",
 		ExpressionAttributeValues={
 			':m': masternodes_count,
 			':s': available_supply,
 			':r': str(masternodes_reward),
 			':c': masternodes_cost,
+			':v': str(masternodes_monthly_revenue),
+			':w': str(masternodes_reward_waiting_time),
 		},
 		ReturnValues="UPDATED_NEW"
 	)
