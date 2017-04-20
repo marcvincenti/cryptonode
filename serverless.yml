@@ -16,19 +16,30 @@ provider:
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_CURRENCIES_TABLE}"
 
 functions:
-  currency:
-    handler: coinmarketcap/cron-pivx.currency
+  pivx-price:
+    handler: currencies/pivx.price
     events:
       - schedule: rate(5 minutes)
-  masternodes:
-    handler: masternodes/cron-pivx.masternodes
+  pivx-masternodes:
+    handler: currencies/pivx.masternodes
     events:
       - schedule: rate(1 minute)
-  endpoint:
-    handler: endpoints/get-endpoint.list
+  pivx-get:
+    handler: currencies/pivx.get
     events:
       - http:
           path: pivx
+          method: get
+          cors: true
+  dash-price:
+    handler: currencies/dash.price
+    events:
+      - schedule: rate(5 minutes)
+  dash-get:
+    handler: currencies/dash.get
+    events:
+      - http:
+          path: dash
           method: get
           cors: true
 

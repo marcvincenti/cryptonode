@@ -5,13 +5,57 @@ import json
 import re
 
 dynamodb = boto3.resource('dynamodb')
-url = 'http://178.254.23.111/~pub/DN/DN_masternode_payments_stats.html'
-block_reward = 9 #Reward of stakers + masternodes
-masternodes_cost = "10000"
-blocks_per_day = 1440
-blocks_per_month = blocks_per_day  * 30.4368499
+
+def get(event, context):
+	
+	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
+
+	result = table.get_item(
+		Key={
+			'coin': 'PIVX'
+		}
+	)
+
+	response = {
+		"statusCode": 200,
+		"headers": {
+        	"Access-Control-Allow-Origin" : "*",
+			"Access-Control-Allow-Methods" : "GET"
+      	},
+		"body": json.dumps(result['Item'])
+	}
+
+	return response
+
+def price(event, context):
+	
+	url = 'https://api.coinmarketcap.com/v1/ticker/pivx/?convert=EUR'
+	
+	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
+	
+	content = urllib2.urlopen(url).read()
+	data = json.loads(content)[0]
+	
+	table.update_item(
+		Key={
+			'coin': 'PIVX'
+		},
+		UpdateExpression="set price_usd = :u, price_eur = :e, price_btc = :b ",
+		ExpressionAttributeValues={
+			':u': data.get('price_usd'),
+			':e': data.get('price_eur'),
+			':b': data.get('price_btc'),
+		},
+		ReturnValues="UPDATED_NEW"
+	)
 
 def masternodes(event, context):
+	
+	block_reward = 9 #Reward of stakers + masternodes
+	masternodes_cost = "10000"
+	blocks_per_day = 1440
+	blocks_per_month = blocks_per_day  * 30.4368499
+	url = 'http://178.254.23.111/~pub/DN/DN_masternode_payments_stats.html'
 	
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
 
