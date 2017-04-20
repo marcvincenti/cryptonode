@@ -12,7 +12,7 @@ def get(event, context):
 
 	result = table.get_item(
 		Key={
-			'coin': 'Dash'
+			'coin': 'Crown'
 		}
 	)
 
@@ -29,7 +29,7 @@ def get(event, context):
 
 def price(event, context):
 	
-	url = 'https://api.coinmarketcap.com/v1/ticker/dash/?convert=EUR'
+	url = 'https://api.coinmarketcap.com/v1/ticker/crown/?convert=EUR'
 	
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
 	
@@ -38,7 +38,7 @@ def price(event, context):
 	
 	table.update_item(
 		Key={
-			'coin': 'Dash'
+			'coin': 'Crown'
 		},
 		UpdateExpression="set price_usd = :u, price_eur = :e, price_btc = :b, available_supply = :s ",
 		ExpressionAttributeValues={
@@ -52,41 +52,36 @@ def price(event, context):
 
 def masternodes(event, context):
 	
-	masternodes_cost = "1000"
-	blocks_per_day = 576
+	masternodes_cost = "10000"
+	blocks_per_day = 1440
 	blocks_per_month = blocks_per_day  * 30.4368499
-	blocks_per_year = blocks_per_day  * 365.242199
-	url = 'http://178.254.23.111/~pub/Dash/masternode_payments_stats.html'
+	url = 'https://chainz.cryptoid.info/explorer/index.data.dws?coin=crw'
 	
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
-
-	content = urllib2.urlopen(url).read().split('\n')
-	pattern=re.compile(r'<b[^>]*> ([^<]+) </b>')
-	block_number = re.findall(pattern, content[23]).pop()
-	block_difficulty = re.findall(pattern, content[24]).pop()
-	masternodes_count = re.findall(pattern, content[26]).pop()
-	years_elapsed = int(float(block_number) / blocks_per_year)
 	
-	reward = int(2222222.0/pow(((float(block_difficulty)+2600.0)/9.0),2.0));
-	if reward > 25 : reward = 25
-	elif reward < 5 : reward = 5
-	for x in range(years_elapsed) :
-		reward = reward - (float(reward)/14)
-	reward = 0.9 * reward
+	req = urllib2.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+	content = urllib2.urlopen(req).read()
+	data = json.loads(content)
+	pattern=re.compile(r'([^<]+) / ')
 	
-	masternodes_reward = reward / 2
+	masternodes_count = int(re.findall(pattern, data.get('masternodes')).pop())
+	block_number = data.get('blocks')[0].get('height')
+	
+	halvings = int(block_number / 2100000)
+	block_reward = 9.0 / pow(2.0, halvings)
+	masternodes_reward = block_reward / 2.0
 	masternodes_monthly_revenue = float(blocks_per_month * masternodes_reward) / float(masternodes_count)
 	masternodes_reward_waiting_time = float(masternodes_count) / float(blocks_per_day)
 
 	table.update_item(
 		Key={
-			'coin': 'Dash'
+			'coin': 'Crown'
 		},
-		UpdateExpression="set masternodes_count = :m, masternodes_cost = :c, masternodes_reward = :r, masternodes_monthly_revenue = :v, masternodes_reward_waiting_time = :w  ",
+		UpdateExpression="set masternodes_count = :m, masternodes_reward = :r, masternodes_cost = :c, masternodes_monthly_revenue = :v, masternodes_reward_waiting_time = :w ",
 		ExpressionAttributeValues={
 			':m': masternodes_count,
-			':c': masternodes_cost,
 			':r': str(masternodes_reward),
+			':c': masternodes_cost,
 			':v': str(masternodes_monthly_revenue),
 			':w': str(masternodes_reward_waiting_time),
 		},

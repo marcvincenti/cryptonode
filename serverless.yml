@@ -23,7 +23,7 @@ functions:
   pivx-masternodes:
     handler: currencies/pivx.masternodes
     events:
-      - schedule: rate(1 minute)
+      - schedule: rate(5 minutes)
   pivx-get:
     handler: currencies/pivx.get
     events:
@@ -41,6 +41,21 @@ functions:
       - schedule: rate(10 minutes)
   dash-get:
     handler: currencies/dash.get
+    events:
+      - http:
+          path: dash
+          method: get
+          cors: true
+  crown-price:
+    handler: currencies/crown.price
+    events:
+      - schedule: rate(5 minutes)
+  crown-masternodes:
+    handler: currencies/crown.masternodes
+    events:
+      - schedule: rate(5 minutes)
+  crown-get:
+    handler: currencies/crown.get
     events:
       - http:
           path: dash
