@@ -35,6 +35,10 @@ functions:
     handler: currencies/dash.price
     events:
       - schedule: rate(5 minutes)
+  dash-masternodes:
+    handler: currencies/dash.masternodes
+    events:
+      - schedule: rate(10 minutes)
   dash-get:
     handler: currencies/dash.get
     events:
