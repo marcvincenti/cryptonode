@@ -13,9 +13,17 @@ provider:
       Action:
         - dynamodb:GetItem
         - dynamodb:UpdateItem
+        - dynamodb:Scan
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_CURRENCIES_TABLE}"
 
 functions:
+  all-currencies:
+    handler: all.list
+    events:
+      - http:
+          path: currencies
+          method: get
+          cors: true
   transfercoin-price:
     handler: currencies/transfercoin.price
     events:

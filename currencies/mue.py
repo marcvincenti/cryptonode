@@ -12,7 +12,7 @@ def get(event, context):
 
 	result = table.get_item(
 		Key={
-			'coin': 'Crown'
+			'coin': 'MonetaryUnit'
 		}
 	)
 
@@ -29,7 +29,7 @@ def get(event, context):
 
 def price(event, context):
 	
-	url = 'https://api.coinmarketcap.com/v1/ticker/crown/?convert=EUR'
+	url = 'https://api.coinmarketcap.com/v1/ticker/monetaryunit/?convert=EUR'
 	
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
 	
@@ -38,7 +38,7 @@ def price(event, context):
 	
 	table.update_item(
 		Key={
-			'coin': 'Crown'
+			'coin': 'MonetaryUnit'
 		},
 		UpdateExpression="set price_usd = :u, price_eur = :e, price_btc = :b, available_supply = :s ",
 		ExpressionAttributeValues={
@@ -52,10 +52,10 @@ def price(event, context):
 
 def masternodes(event, context):
 	
-	masternodes_cost = "10000"
-	blocks_per_day = 1440
+	masternodes_cost = "500000"
+	blocks_per_day = 2160
 	blocks_per_month = blocks_per_day  * 30.4368499
-	url = 'https://chainz.cryptoid.info/explorer/index.data.dws?coin=crw'
+	url = 'https://chainz.cryptoid.info/explorer/index.data.dws?coin=mue'
 	
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
 	
@@ -65,17 +65,15 @@ def masternodes(event, context):
 	pattern=re.compile(r'([^<]+) / ')
 	
 	masternodes_count = int(re.findall(pattern, data.get('masternodes')).pop())
-	block_number = data.get('blocks')[0].get('height')
-	
-	halvings = int(block_number / 2100000)
-	block_reward = 9.0 / pow(2.0, halvings)
-	masternodes_reward = block_reward / 2.0
+
+	block_reward = 40.0
+	masternodes_reward = block_reward * 0.45
 	masternodes_monthly_revenue = float(blocks_per_month * masternodes_reward) / float(masternodes_count)
 	masternodes_reward_waiting_time = float(masternodes_count) / float(blocks_per_day)
 
 	table.update_item(
 		Key={
-			'coin': 'Crown'
+			'coin': 'TransferCoin'
 		},
 		UpdateExpression="set masternodes_count = :m, masternodes_reward = :r, masternodes_cost = :c, masternodes_monthly_revenue = :v, masternodes_reward_waiting_time = :w ",
 		ExpressionAttributeValues={
