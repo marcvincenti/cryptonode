@@ -16,6 +16,21 @@ provider:
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_CURRENCIES_TABLE}"
 
 functions:
+  transfercoin-price:
+    handler: currencies/transfercoin.price
+    events:
+      - schedule: rate(5 minutes)
+  transfercoin-masternodes:
+    handler: currencies/transfercoin.masternodes
+    events:
+      - schedule: rate(5 minutes)
+  transfercoin-get:
+    handler: currencies/transfercoin.get
+    events:
+      - http:
+          path: currency/tx
+          method: get
+          cors: true
   pivx-price:
     handler: currencies/pivx.price
     events:
@@ -28,7 +43,7 @@ functions:
     handler: currencies/pivx.get
     events:
       - http:
-          path: pivx
+          path: currency/pivx
           method: get
           cors: true
   dash-price:
@@ -43,7 +58,7 @@ functions:
     handler: currencies/dash.get
     events:
       - http:
-          path: dash
+          path: currency/dash
           method: get
           cors: true
   crown-price:
@@ -58,7 +73,7 @@ functions:
     handler: currencies/crown.get
     events:
       - http:
-          path: dash
+          path: currency/crown
           method: get
           cors: true
 
