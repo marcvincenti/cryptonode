@@ -4,8 +4,15 @@
             [cljs.core.async :refer [<!]]
             [app.state :refer [app-state]]))
 
-(def cur-available ["BTC", "EUR", "USD"])
-(def ^:private url "https://lv5jw9vhld.execute-api.eu-west-1.amazonaws.com/dev/currencies")
+(def cur-available ["USD" "EUR" "BTC"])
+(defn cur-symbol [c]
+  (case c
+        "USD" "$"
+        "EUR" "€"
+        "BTC" "฿"
+        ""))
+
+(def ^:private url "https://hhmv5npmn8.execute-api.eu-west-1.amazonaws.com/dev/currencies")
 
 (defn update-data
   "Load masternodes data from the api"
