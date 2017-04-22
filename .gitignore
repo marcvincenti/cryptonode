@@ -1,1 +1,6 @@
-.serverless
+/*.log
+/target
+/*-init.clj
+/resources/public/js
+out
+serverless_api/.serverless
