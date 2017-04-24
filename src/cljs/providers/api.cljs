@@ -12,7 +12,7 @@
         "BTC" "฿"
         ""))
 
-(def ^:private url "https://hhmv5npmn8.execute-api.eu-west-1.amazonaws.com/dev/currencies")
+(def ^:private url "https://318h5of2kh.execute-api.eu-west-1.amazonaws.com/dev/currencies")
 
 (defn update-data
   "Load masternodes data from the api"

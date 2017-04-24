@@ -73,7 +73,7 @@ def masternodes(event, context):
 
 	table.update_item(
 		Key={
-			'coin': 'TransferCoin'
+			'coin': 'MonetaryUnit'
 		},
 		UpdateExpression="set masternodes_count = :m, masternodes_reward = :r, masternodes_cost = :c, masternodes_monthly_revenue = :v, masternodes_reward_waiting_time = :w ",
 		ExpressionAttributeValues={

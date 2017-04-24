@@ -13,3 +13,6 @@ h1 {
     border:0;
     background:transparent;
 }
+.table>thead>tr>th:hover {
+  text-decoration: underline;
+}

@@ -5,6 +5,24 @@
             [app.utils :as utils]
             [providers.api :as api]))
 
+(defn update-sort-value [new-val]
+  (if (= new-val (get-in @app-state [:user-preferences :sort-val]))
+    (swap! app-state update-in [:user-preferences :ascending] not)
+    (swap! app-state assoc-in [:user-preferences :ascending] (= new-val :coin)))
+  (swap! app-state assoc-in [:user-preferences :sort-val] new-val))
+
+(defn sorted-contents [table-contents]
+  (let [column (get-in @app-state [:user-preferences :sort-val])
+        sorted-contents (->> table-contents (sort-by (cond
+        (= column :market-cap) #(* (get % :available_supply) (get % :price_btc))
+        (= column :masternode-cost) #(* (get % :masternodes_cost) (get % :price_btc))
+        (= column :monthly-revenue) #(* (get % :masternodes_monthly_revenue) (get % :price_btc))
+        (= column :roi) #(/ (get % :masternodes_monthly_revenue) (get % :masternodes_cost))
+        :else column)))]
+    (if (get-in @app-state [:user-preferences :ascending])
+      sorted-contents
+      (rseq sorted-contents))))
+
 (defn filter-content
   [filterstring]
   (filter #(re-find (->> (str filterstring)
@@ -15,34 +33,38 @@
 
 (defn table
   [myfilter]
-  (let [currency-symbol (api/cur-symbol (get @app-state :user-currency))]
-  [:table {:class "table table-condensed"}
+  (let [user-currency (get-in @app-state [:user-preferences :currency])
+        currency-symbol (api/cur-symbol user-currency)]
+  [:table.table
    [:thead
     [:tr
-     [:th "Name"]
-     [:th "Market Cap"]
-     [:th "Masternode Cost"]
-     [:th "Monthly Revenue"]
-     [:th "R.O.I"]]]
+     [:th {:on-click #(update-sort-value :coin)} "Name"]
+     [:th {:on-click #(update-sort-value :market-cap)} "Market Cap"]
+     [:th {:on-click #(update-sort-value :masternode-cost)} "Masternode Cost"]
+     [:th {:on-click #(update-sort-value :monthly-revenue)} "Monthly Revenue"]
+     [:th {:on-click #(update-sort-value :roi)} "R.O.I"]]]
     [:tbody
      (for [{:keys [coin
                    available_supply
                    masternodes_cost
                    masternodes_monthly_revenue
-                   price_usd]} (filter-content myfilter)] ^{:key coin}
+                   price_usd
+                   price_btc
+                   price_eur]} (sorted-contents (filter-content myfilter))
+          :let [price (utils/get-user-price user-currency price_usd price_eur price_btc)]] ^{:key coin}
        [:tr
          [:td coin]
-         [:td (utils/format-number (* available_supply price_usd)) currency-symbol]
-         [:td (utils/format-number (* masternodes_cost price_usd)) currency-symbol]
-         [:td (utils/format-number (* masternodes_monthly_revenue price_usd)) currency-symbol]
+         [:td (utils/kilo-numbers (str (int (* available_supply price)))) currency-symbol]
+         [:td (utils/format-number (* masternodes_cost price)) currency-symbol]
+         [:td (utils/format-number (* masternodes_monthly_revenue price)) currency-symbol]
          [:td (utils/format-number (* 100 (/ masternodes_monthly_revenue masternodes_cost)))"%"]])]]))
 
 (defn navbar-table
   [myFilter]
   [:nav.navbar.navbar-default
     [:form.navbar-form.navbar-left
-      [:select.form-control {:value (get @app-state :user-currency)
-        :on-change #(swap! app-state assoc :user-currency
+      [:select.form-control {:value (get-in @app-state [:user-preferences :currency])
+        :on-change #(swap! app-state assoc-in [:user-preferences :currency]
                       (-> % .-target .-value))}
         (for [c api/cur-available] ^{:key c} [:option c])]]
     [:div.input-group.stylish-input-group
