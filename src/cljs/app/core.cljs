@@ -6,6 +6,8 @@
             [goog.history.EventType :as EventType]
             [reagent.core :as r]
             [app.state :refer [app-state]]
+            [components.menu-bar :as menu-bar]
+            [components.footer :as footer]
             [providers.api :as api]
             [pages.index :as index]))
 
@@ -33,5 +35,7 @@
 (defn ^:export run []
   (app-routes)
   (api/update-data)
+  (r/render [menu-bar/component] (.getElementById js/document "menu-bar"))
+  (r/render [footer/component] (.getElementById js/document "footer-bar"))
   (r/render [current-page]
     (.getElementById js/document "app-container")))
