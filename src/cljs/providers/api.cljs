@@ -20,3 +20,8 @@
   (go (let [response (<! (http/get url {:with-credentials? false}))]
     (when (:success response)
       (swap! app-state assoc-in [:api-data] (get response :body))))))
+
+(defn get-currency [c]
+  (->> (get @app-state :api-data)
+       (filter #(= (get % :coin) c))
+       first))
