@@ -25,11 +25,17 @@
     [:div.panel.panel-default
       [:div.panel-heading
         [:div.input-group.col-sm-4
-          [:span.input-group-addon "Staking PIVX"]
+          [:span.input-group-addon "Wallet"]
           [:input.form-control {:type "number" :value @nb-pivx
               :on-change #(reset! nb-pivx (-> % .-target .-value))}]]]
       [:table.table [:tbody
-        [:tr [:th.col-sm-6 "Staking Rewards"]
+        [:tr [:th.col-sm-6 "Staked PIVX"]
+          [:td (-> @nb-pivx
+                   (int)
+                   (str)
+                   (utils/kilo-numbers)) " PIVX "
+            [:sub (utils/format-number (* @nb-pivx price)) currency-symbol]]]
+        [:tr [:th "Staking Rewards"]
           [:td (-> st-reward
                    (utils/format-number)) " PIVX "
             [:sub (utils/format-number (* st-reward price)) currency-symbol]
