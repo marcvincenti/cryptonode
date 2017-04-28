@@ -27,7 +27,7 @@
 (defn table []
   (let [user-currency (get-in @app-state [:user-preferences :currency])
         currency-symbol (api/cur-symbol user-currency)]
-  [:table.table
+  [:table.table.table-hover
    [:thead
     [:tr
      [:th {:on-click #(update-sort-value :coin)} "Name"]

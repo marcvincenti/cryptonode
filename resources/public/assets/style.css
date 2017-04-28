@@ -1,6 +1,12 @@
 h1 {
   text-align: center;
 }
+nav.navbar {
+  margin-bottom: 0;
+}
 .table>thead>tr>th:hover {
   text-decoration: underline;
+}
+.navbar sub {
+  color: #FF0000;
 }

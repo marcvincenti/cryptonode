@@ -1,6 +1,7 @@
 (ns pages.currencies.pivx
   (:require [app.state :refer [app-state]]
             [app.utils :as utils]
+            [components.coin-infos :as coin-infos]
             [providers.api :as api]))
 
 (def ^:private blocks-per-day 1440)
@@ -33,20 +34,21 @@
             [:sub (utils/format-number (* mn-cost price)) currency-symbol]]
           [:td "> 1 PIVX"]]
         [:tr [:th "Reward"]
-          [:td (str (utils/format-number mn-reward) " PIVX ")
+          [:td (utils/format-number mn-reward) " PIVX "
             [:sub (utils/format-number (* mn-reward price)) currency-symbol]]
-          [:td (str (utils/format-number st-reward) " PIVX ")
+          [:td (utils/format-number st-reward) " PIVX "
             [:sub (utils/format-number (* st-reward price)) currency-symbol]]]
         [:tr [:th "Average waiting time"]
-          [:td (str (utils/format-number waiting-time-masternode) " days")]
-          [:td (str (utils/format-number waiting-time-staking) " days")]]
+          [:td (utils/format-number waiting-time-masternode) " days"]
+          [:td (utils/format-number waiting-time-staking) " days"]]
         [:tr [:th "Monthly revenue"]
-          [:td (str (utils/format-number mn-monthly-revenue) " PIVX ")
+          [:td (utils/format-number mn-monthly-revenue) " PIVX "
             [:sub (utils/format-number (* mn-monthly-revenue price)) currency-symbol]]
-          [:td (str (utils/format-number st-monthly-revenue) " PIVX ")
+          [:td (utils/format-number st-monthly-revenue) " PIVX "
             [:sub (utils/format-number (* st-monthly-revenue price)) currency-symbol]]]]]]))
 
 (defn component []
   [:div {:class "container"}
     [:h1 {:class "page-header"} "PIVX"]
+    [coin-infos/masternodes "PIVX"]
     [compare-with-st]])
