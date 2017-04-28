@@ -11,11 +11,12 @@
                      (get data :price_eur) (get data :price_btc))
         masternodes-reward (get data :masternodes_reward)
         masternodes-cost (get data :masternodes_cost)
+        masternodes-monthly-revenue (get data :masternodes_monthly_revenue)
         masternodes-waiting-time (get data :masternodes_reward_waiting_time)]
-  [:div {:class "panel panel-default"}
-    [:div {:class "panel-heading"} coin " Masternodes"]
-    [:table {:class "table"} [:tbody
-      [:tr [:th "Actual Coin Supply"]
+  [:div.panel.panel-default
+    [:div.panel-heading coin " Masternodes"]
+    [:table.table [:tbody
+      [:tr [:th.col-sm-6 "Actual Coin Supply"]
         [:td (-> (get data :available_supply)
                  (int)
                  (str)
@@ -37,5 +38,8 @@
             " / " (if (> masternodes-waiting-time 2)
                     (str (utils/format-number masternodes-waiting-time) " days")
                     (str (utils/format-number (* 24 masternodes-waiting-time)) " hours"))]]
-
+        [:tr [:th "Monthly Income"]
+          [:td (-> masternodes-monthly-revenue
+                   (utils/format-number)) " " coin " "
+            [:sub (utils/format-number (* masternodes-monthly-revenue price)) currency-symbol]]]
         ]]]))
