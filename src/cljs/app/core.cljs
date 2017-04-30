@@ -21,7 +21,11 @@
     (events/listen
      EventType/NAVIGATE
      (fn [event]
-       (secretary/dispatch! (.-token event))))
+       (do
+         (secretary/dispatch! (.-token event))
+         ;google analytics
+         (js/ga 'set' 'page' (str (get @app-state :page)))
+         (js/ga 'send' 'pageview'))))
     (.setEnabled true)))
 
 ;Page routes definition
