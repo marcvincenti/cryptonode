@@ -25,7 +25,7 @@
     [:div.panel.panel-default
       [:div.panel-heading
         [:div.input-group.col-sm-4
-          [:span.input-group-addon "Wallet"]
+          [:span.input-group-addon "Staking"]
           [:input.form-control {:type "number" :value @nb-pivx
               :on-change #(reset! nb-pivx (-> % .-target .-value))}]]]
       [:table.table [:tbody

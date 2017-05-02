@@ -15,6 +15,12 @@
             [pages.currencies.pivx :as pivx-page]
             [pages.currencies.transfercoin :as transfercoin-page]))
 
+;access to google analytics
+(defn ga [& more]
+  (when js/ga
+    (.. (aget js/window "ga")
+        (apply nil (clj->js more)))))
+
 ;Adding Browser History
 (defn hook-browser-navigation! []
   (doto (History.)
@@ -24,8 +30,8 @@
        (do
          (secretary/dispatch! (.-token event))
          ;google analytics
-         (js/ga 'set' 'page' (str (get @app-state :page)))
-         (js/ga 'send' 'pageview'))))
+         (ga "set" "page" (str (get @app-state :page)))
+         (ga "send" "pageview"))))
     (.setEnabled true)))
 
 ;Page routes definition
