@@ -8,6 +8,11 @@
 (def ^:private blocks-per-day 1440)
 (def ^:private blocks-per-month (* 30.4167 blocks-per-day))
 
+(defn disclaimer []
+  [:div.alert.alert-warning {:role "alert"}
+    [:strong "Warning "]
+    "The PIVX rewards will be divided by 2 from block 648000 (~18 may)."])
+
 (defn staking [nb-pivx]
   (let [data (api/get-currency "PIVX")
         user-currency (get-in @app-state [:user-preferences :currency])
@@ -52,5 +57,6 @@
   (let [staking-pivx (r/atom 10000)]
     [:div {:class "container"}
       [:h1 {:class "page-header"} "PIVX"]
+      [disclaimer]
       [coin-infos/masternodes "PIVX"]
       [staking staking-pivx]]))

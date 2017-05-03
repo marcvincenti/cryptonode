@@ -33,7 +33,7 @@
      [:th {:on-click #(update-sort-value :coin)} "Name"]
      [:th {:on-click #(update-sort-value :market-cap)} "Market Cap"]
      [:th {:on-click #(update-sort-value :masternode-cost)} "Masternode Cost"]
-     [:th {:on-click #(update-sort-value :monthly-revenue)} "Monthly Revenue"]
+     [:th {:on-click #(update-sort-value :monthly-revenue)} "Expected Monthly Revenue"]
      [:th {:on-click #(update-sort-value :roi)} "R.O.I"]]]
     [:tbody
      (for [{:keys [coin
