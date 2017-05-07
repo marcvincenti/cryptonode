@@ -103,15 +103,13 @@ def masternodes_history(event, context):
 	content = urllib2.urlopen(url).read().split('\n')
 	pattern=re.compile(r'<b[^>]*> ([^<]+) </b>')
 	
-	date = datetime.datetime.now()
-	start_of_day = datetime.date(date.year, date.month, date.day)
-	
+	date = datetime.datetime.utcnow()
 	masternodes_count = re.findall(pattern, content[26]).pop()
 
 	table.update_item(
 		Key={
 			'coin': 'Dash',
-			'timestamp': int(start_of_day.strftime("%s"))
+			'timestamp': int(date.strftime("%s"))
 		},
 		UpdateExpression="set masternodes_count = :m",
 		ExpressionAttributeValues={

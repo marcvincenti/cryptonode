@@ -38,7 +38,7 @@ functions:
   transfercoin-history:
     handler: currencies/transfercoin.masternodes_history
     events:
-      - schedule: cron(0 2 * * ? *)
+      - schedule: rate(6 hours)
   transfercoin-get:
     handler: currencies/transfercoin.get
     events:
@@ -57,7 +57,7 @@ functions:
   pivx-history:
     handler: currencies/pivx.masternodes_history
     events:
-      - schedule: cron(0 2 * * ? *)
+      - schedule: rate(6 hours)
   pivx-get:
     handler: currencies/pivx.get
     events:
@@ -76,7 +76,7 @@ functions:
   dash-history:
     handler: currencies/dash.masternodes_history
     events:
-      - schedule: cron(0 2 * * ? *)
+      - schedule: rate(6 hours)
   dash-get:
     handler: currencies/dash.get
     events:
@@ -95,7 +95,7 @@ functions:
   crown-history:
     handler: currencies/crown.masternodes_history
     events:
-      - schedule: cron(0 2 * * ? *)
+      - schedule: rate(6 hours)
   crown-get:
     handler: currencies/crown.get
     events:

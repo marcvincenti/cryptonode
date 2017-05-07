@@ -98,15 +98,13 @@ def masternodes_history(event, context):
 	data = json.loads(content)
 	pattern=re.compile(r'([^<]+) / ')
 	
-	date = datetime.datetime.now()
-	start_of_day = datetime.date(date.year, date.month, date.day)
-	
+	date = datetime.datetime.utcnow()
 	masternodes_count = re.findall(pattern, data.get('masternodes')).pop()
 
 	table.update_item(
 		Key={
 			'coin': 'MonetaryUnit',
-			'timestamp': int(start_of_day.strftime("%s"))
+			'timestamp': int(date.strftime("%s"))
 		},
 		UpdateExpression="set masternodes_count = :m",
 		ExpressionAttributeValues={
