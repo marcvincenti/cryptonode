@@ -8,13 +8,16 @@ provider:
   region: eu-west-1
   environment:
     DYNAMODB_CURRENCIES_TABLE: cryptocurrencies
+    DYNAMODB_MASTERNODES_COUNT_TABLE: masternode_count
   iamRoleStatements:
     - Effect: Allow
       Action:
         - dynamodb:GetItem
         - dynamodb:UpdateItem
         - dynamodb:Scan
-      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_CURRENCIES_TABLE}"
+      Resource: 
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_CURRENCIES_TABLE}"
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_MASTERNODES_COUNT_TABLE}"
 
 functions:
   all-currencies:
@@ -32,6 +35,10 @@ functions:
     handler: currencies/transfercoin.masternodes
     events:
       - schedule: rate(5 minutes)
+  transfercoin-history:
+    handler: currencies/transfercoin.masternodes_history
+    events:
+      - schedule: cron(0 2 * * ? *)
   transfercoin-get:
     handler: currencies/transfercoin.get
     events:
@@ -47,6 +54,10 @@ functions:
     handler: currencies/pivx.masternodes
     events:
       - schedule: rate(5 minutes)
+  pivx-history:
+    handler: currencies/pivx.masternodes_history
+    events:
+      - schedule: cron(0 2 * * ? *)
   pivx-get:
     handler: currencies/pivx.get
     events:
@@ -62,6 +73,10 @@ functions:
     handler: currencies/dash.masternodes
     events:
       - schedule: rate(10 minutes)
+  dash-history:
+    handler: currencies/dash.masternodes_history
+    events:
+      - schedule: cron(0 2 * * ? *)
   dash-get:
     handler: currencies/dash.get
     events:
@@ -77,6 +92,10 @@ functions:
     handler: currencies/crown.masternodes
     events:
       - schedule: rate(5 minutes)
+  crown-history:
+    handler: currencies/crown.masternodes_history
+    events:
+      - schedule: cron(0 2 * * ? *)
   crown-get:
     handler: currencies/crown.get
     events:
@@ -102,3 +121,25 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_CURRENCIES_TABLE}
+    MasterNodesDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: coin
+            AttributeType: S
+          -
+            AttributeName: timestamp
+            AttributeType: N
+        KeySchema:
+          -
+            AttributeName: coin
+            KeyType: HASH
+          -
+            AttributeName: timestamp
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_MASTERNODES_COUNT_TABLE}
+

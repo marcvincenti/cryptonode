@@ -93,3 +93,29 @@ def masternodes(event, context):
 		},
 		ReturnValues="UPDATED_NEW"
 	)
+
+def masternodes_history(event, context):
+	
+	url = 'http://178.254.23.111/~pub/Dash/masternode_payments_stats.html'
+	
+	table = dynamodb.Table(os.environ['DYNAMODB_MASTERNODES_COUNT_TABLE'])
+	
+	content = urllib2.urlopen(url).read().split('\n')
+	pattern=re.compile(r'<b[^>]*> ([^<]+) </b>')
+	
+	date = datetime.datetime.now()
+	start_of_day = datetime.date(date.year, date.month, date.day)
+	
+	masternodes_count = re.findall(pattern, content[26]).pop()
+
+	table.update_item(
+		Key={
+			'coin': 'Dash',
+			'timestamp': int(start_of_day.strftime("%s"))
+		},
+		UpdateExpression="set masternodes_count = :m",
+		ExpressionAttributeValues={
+			':m': masternodes_count,
+		},
+		ReturnValues="UPDATED_NEW"
+	)

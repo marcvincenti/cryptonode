@@ -86,3 +86,31 @@ def masternodes(event, context):
 		},
 		ReturnValues="UPDATED_NEW"
 	)
+
+def masternodes_history(event, context):
+	
+	url = 'https://chainz.cryptoid.info/explorer/index.data.dws?coin=mue'
+	
+	table = dynamodb.Table(os.environ['DYNAMODB_MASTERNODES_COUNT_TABLE'])
+	
+	req = urllib2.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+	content = urllib2.urlopen(req).read()
+	data = json.loads(content)
+	pattern=re.compile(r'([^<]+) / ')
+	
+	date = datetime.datetime.now()
+	start_of_day = datetime.date(date.year, date.month, date.day)
+	
+	masternodes_count = re.findall(pattern, data.get('masternodes')).pop()
+
+	table.update_item(
+		Key={
+			'coin': 'MonetaryUnit',
+			'timestamp': int(start_of_day.strftime("%s"))
+		},
+		UpdateExpression="set masternodes_count = :m",
+		ExpressionAttributeValues={
+			':m': masternodes_count,
+		},
+		ReturnValues="UPDATED_NEW"
+	)
