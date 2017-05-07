@@ -63,7 +63,7 @@ def masternodes(event, context):
 	content = urllib2.urlopen(url).read().split('\n')
 	pattern=re.compile(r'<b[^>]*> ([^<]+) </b>')
 	masternodes_count = re.findall(pattern, content[27]).pop()
-	available_supply = re.findall(pattern, content[36]).pop()
+	available_supply = re.findall(pattern, content[37]).pop()
 	masternodes_rate = (float(masternodes_count) * 10000) / float(available_supply)
 	
 	if masternodes_rate <= 0.01 : masternodes_reward = block_reward * 0.90
