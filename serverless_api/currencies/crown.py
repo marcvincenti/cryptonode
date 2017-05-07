@@ -40,12 +40,13 @@ def price(event, context):
 		Key={
 			'coin': 'Crown'
 		},
-		UpdateExpression="set price_usd = :u, price_eur = :e, price_btc = :b, available_supply = :s ",
+		UpdateExpression="set price_usd = :u, price_eur = :e, price_btc = :b, available_supply = :s, symbol = :y ",
 		ExpressionAttributeValues={
 			':u': data.get('price_usd'),
 			':e': data.get('price_eur'),
 			':b': data.get('price_btc'),
 			':s': data.get('available_supply'),
+			':y': data.get('symbol'),
 		},
 		ReturnValues="UPDATED_NEW"
 	)

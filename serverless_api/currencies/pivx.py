@@ -40,11 +40,12 @@ def price(event, context):
 		Key={
 			'coin': 'PIVX'
 		},
-		UpdateExpression="set price_usd = :u, price_eur = :e, price_btc = :b ",
+		UpdateExpression="set price_usd = :u, price_eur = :e, price_btc = :b, symbol = :y ",
 		ExpressionAttributeValues={
 			':u': data.get('price_usd'),
 			':e': data.get('price_eur'),
 			':b': data.get('price_btc'),
+			':y': data.get('symbol'),
 		},
 		ReturnValues="UPDATED_NEW"
 	)
