@@ -3,6 +3,7 @@ import boto3
 import urllib2
 import json
 import re
+import time
 
 dynamodb = boto3.resource('dynamodb')
 
@@ -98,13 +99,12 @@ def masternodes_history(event, context):
 	data = json.loads(content)
 	pattern=re.compile(r'([^<]+) / ')
 	
-	date = datetime.datetime.utcnow()
 	masternodes_count = re.findall(pattern, data.get('masternodes')).pop()
 
 	table.update_item(
 		Key={
 			'coin': 'MonetaryUnit',
-			'timestamp': int(date.strftime("%s"))
+			'timestamp': int(time.time())
 		},
 		UpdateExpression="set masternodes_count = :m",
 		ExpressionAttributeValues={
