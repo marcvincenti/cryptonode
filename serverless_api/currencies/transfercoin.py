@@ -90,25 +90,21 @@ def masternodes(event, context):
 	
 def masternodes_history(event, context):
 	
-	url = 'https://chainz.cryptoid.info/explorer/index.data.dws?coin=tx'
-	
-	table = dynamodb.Table(os.environ['DYNAMODB_MASTERNODES_COUNT_TABLE'])
-	
-	req = urllib2.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-	content = urllib2.urlopen(req).read()
-	data = json.loads(content)
-	pattern=re.compile(r'([^<]+) / ')
-	
-	masternodes_count = re.findall(pattern, data.get('masternodes')).pop()
+	coin = 'TransferCoin'
+	from_table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
+	to_table = dynamodb.Table(os.environ['DYNAMODB_MASTERNODES_COUNT_TABLE'])
 
-	table.update_item(
+	result = from_table.get_item(Key={'coin': coin})['Item']
+
+	to_table.update_item(
 		Key={
-			'coin': 'TransferCoin',
+			'coin': coin,
 			'timestamp': int(time.time())
 		},
-		UpdateExpression="set masternodes_count = :m",
+		UpdateExpression="set masternodes_count = :m, price = :p",
 		ExpressionAttributeValues={
-			':m': masternodes_count,
+			':m': result.get('masternodes_count'),
+			':p': result.get('price_btc'),
 		},
 		ReturnValues="UPDATED_NEW"
 	)

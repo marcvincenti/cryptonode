@@ -13,6 +13,7 @@ provider:
     - Effect: Allow
       Action:
         - dynamodb:GetItem
+        - dynamodb:Query
         - dynamodb:UpdateItem
         - dynamodb:Scan
       Resource: 
