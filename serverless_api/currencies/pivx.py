@@ -4,11 +4,23 @@ import urllib2
 import json
 import re
 import time
+import decimal
+from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
 
+# This is a workaround for: http://bugs.python.org/issue16535
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            if o % 1 > 0:
+                return float(o)
+            else:
+                return int(o)
+        return super(DecimalEncoder, self).default(o)
+
 def get(event, context):
-	
+
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
 
 	result = table.get_item(
@@ -23,50 +35,50 @@ def get(event, context):
         	"Access-Control-Allow-Origin" : "*",
 			"Access-Control-Allow-Methods" : "GET"
       	},
-		"body": json.dumps(result['Item'])
+		"body": json.dumps(result['Item'], cls=DecimalEncoder)
 	}
 
 	return response
 
 def price(event, context):
-	
+
 	url = 'https://api.coinmarketcap.com/v1/ticker/pivx/?convert=EUR'
-	
+
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
-	
+
 	content = urllib2.urlopen(url).read()
 	data = json.loads(content)[0]
-	
+
 	table.update_item(
 		Key={
 			'coin': 'PIVX'
 		},
 		UpdateExpression="set price_usd = :u, price_eur = :e, price_btc = :b, symbol = :y ",
 		ExpressionAttributeValues={
-			':u': data.get('price_usd'),
-			':e': data.get('price_eur'),
-			':b': data.get('price_btc'),
+			':u': decimal.Decimal(data.get('price_usd')),
+			':e': decimal.Decimal(data.get('price_eur')),
+			':b': decimal.Decimal(data.get('price_btc')),
 			':y': data.get('symbol'),
 		},
 		ReturnValues="UPDATED_NEW"
 	)
 
 def masternodes(event, context):
-	
+
 	block_reward = 9 #Reward of stakers + masternodes
-	masternodes_cost = "10000"
+	masternodes_cost = 10000
 	blocks_per_day = 1440
 	blocks_per_month = blocks_per_day  * 30.4368499
 	url = 'http://178.254.23.111/~pub/DN/DN_masternode_payments_stats.html'
-	
+
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
 
 	content = urllib2.urlopen(url).read().split('\n')
 	pattern=re.compile(r'<b[^>]*> ([^<]+) </b>')
-	masternodes_count = re.findall(pattern, content[27]).pop()
-	available_supply = re.findall(pattern, content[37]).pop()
+	masternodes_count = int(re.findall(pattern, content[27]).pop())
+	available_supply = int(re.findall(pattern, content[37]).pop())
 	masternodes_rate = (float(masternodes_count) * 10000) / float(available_supply)
-	
+
 	if masternodes_rate <= 0.01 : masternodes_reward = block_reward * 0.90
 	elif masternodes_rate <= 0.02 : masternodes_reward = block_reward * 0.88
 	elif masternodes_rate <= 0.03 : masternodes_reward = block_reward * 0.87
@@ -153,7 +165,7 @@ def masternodes(event, context):
 	elif masternodes_rate <= 0.987 : masternodes_reward = block_reward * 0.06
 	elif masternodes_rate <= 0.99 : masternodes_reward = block_reward * 0.05
 	else : masternodes_reward = block_reward * 0.01
-	
+
 	masternodes_monthly_revenue = float(blocks_per_month * masternodes_reward) / float(masternodes_count)
 	masternodes_reward_waiting_time = float(masternodes_count) / float(blocks_per_day)
 
@@ -165,16 +177,16 @@ def masternodes(event, context):
 		ExpressionAttributeValues={
 			':m': masternodes_count,
 			':s': available_supply,
-			':r': str(masternodes_reward),
+			':r': decimal.Decimal(str(masternodes_reward)),
 			':c': masternodes_cost,
-			':v': str(masternodes_monthly_revenue),
-			':w': str(masternodes_reward_waiting_time),
+			':v': decimal.Decimal(str(masternodes_monthly_revenue)),
+			':w': decimal.Decimal(str(masternodes_reward_waiting_time)),
 		},
 		ReturnValues="UPDATED_NEW"
 	)
 
 def masternodes_history(event, context):
-	
+
 	coin = 'PIVX'
 	from_table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
 	to_table = dynamodb.Table(os.environ['DYNAMODB_MASTERNODES_COUNT_TABLE'])
