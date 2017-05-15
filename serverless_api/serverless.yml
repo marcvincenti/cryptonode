@@ -22,7 +22,7 @@ provider:
 
 functions:
   all-currencies:
-    handler: all.list
+    handler: queries.list
     events:
       - http:
           path: currencies
@@ -37,23 +37,29 @@ functions:
     events:
       - schedule: rate(5 minutes)
   transfercoin-historywrite:
-    handler: currencies/transfercoin.masternodes_history
+    handler: commons.masternodes_history
     events:
-      - schedule: rate(6 hours)
+      - schedule: cron(0 0/6 * * ? *)
+    environment:
+      COIN_ID: TransferCoin
   transfercoin-get:
-    handler: currencies/transfercoin.get
+    handler: queries.get
     events:
       - http:
           path: currency/tx
           method: get
           cors: true
+    environment:
+      COIN_ID: TransferCoin
   transfercoin-historyread:
-    handler: currencies/transfercoin.get_history
+    handler: queries.mn_count_history
     events:
       - http:
           path: currency/tx/history
           method: get
           cors: true
+    environment:
+      COIN_ID: TransferCoin
   pivx-price:
     handler: currencies/pivx.price
     events:
@@ -63,16 +69,20 @@ functions:
     events:
       - schedule: rate(5 minutes)
   pivx-history:
-    handler: currencies/pivx.masternodes_history
+    handler: commons.masternodes_history
     events:
-      - schedule: rate(6 hours)
+      - schedule: cron(0 0/6 * * ? *)
+    environment:
+      COIN_ID: PIVX
   pivx-get:
-    handler: currencies/pivx.get
+    handler: queries.get
     events:
       - http:
           path: currency/pivx
           method: get
           cors: true
+    environment:
+      COIN_ID: PIVX
   dash-price:
     handler: currencies/dash.price
     events:
@@ -82,16 +92,20 @@ functions:
     events:
       - schedule: rate(10 minutes)
   dash-history:
-    handler: currencies/dash.masternodes_history
+    handler: commons.masternodes_history
     events:
-      - schedule: rate(6 hours)
+      - schedule: cron(0 0/6 * * ? *)
+    environment:
+      COIN_ID: Dash
   dash-get:
-    handler: currencies/dash.get
+    handler: queries.get
     events:
       - http:
           path: currency/dash
           method: get
           cors: true
+    environment:
+      COIN_ID: Dash
   crown-price:
     handler: currencies/crown.price
     events:
@@ -101,16 +115,20 @@ functions:
     events:
       - schedule: rate(5 minutes)
   crown-history:
-    handler: currencies/crown.masternodes_history
+    handler: commons.masternodes_history
     events:
-      - schedule: rate(6 hours)
+      - schedule: cron(0 0/6 * * ? *)
+    environment:
+      COIN_ID: Crown
   crown-get:
-    handler: currencies/crown.get
+    handler: queries.get
     events:
       - http:
           path: currency/crown
           method: get
           cors: true
+    environment:
+      COIN_ID: Crown
 
 resources:
   Resources:

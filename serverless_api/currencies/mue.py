@@ -3,42 +3,11 @@ import boto3
 import urllib2
 import json
 import re
-import time
+import datetime
 import decimal
 from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
-
-# This is a workaround for: http://bugs.python.org/issue16535
-class DecimalEncoder(json.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, decimal.Decimal):
-            if o % 1 > 0:
-                return float(o)
-            else:
-                return int(o)
-        return super(DecimalEncoder, self).default(o)
-
-def get(event, context):
-
-	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
-
-	result = table.get_item(
-		Key={
-			'coin': 'MonetaryUnit'
-		}
-	)
-
-	response = {
-		"statusCode": 200,
-		"headers": {
-        	"Access-Control-Allow-Origin" : "*",
-			"Access-Control-Allow-Methods" : "GET"
-      	},
-		"body": json.dumps(result['Item'], cls=DecimalEncoder)
-	}
-
-	return response
 
 def price(event, context):
 
@@ -96,27 +65,6 @@ def masternodes(event, context):
 			':c': masternodes_cost,
 			':v': decimal.Decimal(str(masternodes_monthly_revenue)),
 			':w': decimal.Decimal(str(masternodes_reward_waiting_time)),
-		},
-		ReturnValues="UPDATED_NEW"
-	)
-
-def masternodes_history(event, context):
-
-	coin = 'MonetaryUnit'
-	from_table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
-	to_table = dynamodb.Table(os.environ['DYNAMODB_MASTERNODES_COUNT_TABLE'])
-
-	result = from_table.get_item(Key={'coin': coin})['Item']
-
-	to_table.update_item(
-		Key={
-			'coin': coin,
-			'timestamp': int(time.time())
-		},
-		UpdateExpression="set masternodes_count = :m, price = :p",
-		ExpressionAttributeValues={
-			':m': result.get('masternodes_count'),
-			':p': result.get('price_btc'),
 		},
 		ReturnValues="UPDATED_NEW"
 	)
