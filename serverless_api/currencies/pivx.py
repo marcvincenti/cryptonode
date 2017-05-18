@@ -34,7 +34,7 @@ def price(event, context):
 
 def masternodes(event, context):
 
-	block_reward = 9 #Reward of stakers + masternodes
+	block_reward = 4.5 #Reward of stakers + masternodes
 	masternodes_cost = 10000
 	blocks_per_day = 1440
 	blocks_per_month = blocks_per_day  * 30.4368499
