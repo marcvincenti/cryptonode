@@ -68,7 +68,7 @@ functions:
     handler: currencies/pivx.masternodes
     events:
       - schedule: rate(5 minutes)
-  pivx-history:
+  pivx-historywrite:
     handler: commons.masternodes_history
     events:
       - schedule: cron(0 0/6 * * ? *)
@@ -83,6 +83,15 @@ functions:
           cors: true
     environment:
       COIN_ID: PIVX
+  pivx-historyread:
+    handler: queries.mn_count_history
+    events:
+      - http:
+          path: currency/pivx/history
+          method: get
+          cors: true
+    environment:
+      COIN_ID: PIVX
   dash-price:
     handler: currencies/dash.price
     events:
@@ -91,7 +100,7 @@ functions:
     handler: currencies/dash.masternodes
     events:
       - schedule: rate(10 minutes)
-  dash-history:
+  dash-historywrite:
     handler: commons.masternodes_history
     events:
       - schedule: cron(0 0/6 * * ? *)
@@ -106,6 +115,15 @@ functions:
           cors: true
     environment:
       COIN_ID: Dash
+  dash-historyread:
+    handler: queries.mn_count_history
+    events:
+      - http:
+          path: currency/dash/history
+          method: get
+          cors: true
+    environment:
+      COIN_ID: Dash
   crown-price:
     handler: currencies/crown.price
     events:
@@ -114,7 +132,7 @@ functions:
     handler: currencies/crown.masternodes
     events:
       - schedule: rate(5 minutes)
-  crown-history:
+  crown-historywrite:
     handler: commons.masternodes_history
     events:
       - schedule: cron(0 0/6 * * ? *)
@@ -125,6 +143,15 @@ functions:
     events:
       - http:
           path: currency/crown
+          method: get
+          cors: true
+    environment:
+      COIN_ID: Crown
+  crown-historyread:
+    handler: queries.mn_count_history
+    events:
+      - http:
+          path: currency/crown/history
           method: get
           cors: true
     environment:

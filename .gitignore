@@ -1,6 +1,6 @@
 /*.log
 /target
 /*-init.clj
-/resources/public/js
-out
+/resources/public/js/app.js
+/resources/public/js/out
 serverless_api/.serverless

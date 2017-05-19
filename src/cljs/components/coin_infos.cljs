@@ -1,5 +1,6 @@
 (ns components.coin-infos
-  (:require [app.state :refer [app-state]]
+  (:require [reagent.core :as r]
+            [app.state :refer [app-state]]
             [app.utils :as utils]
             [providers.api :as api]))
 
@@ -44,3 +45,28 @@
                    (utils/format-number)) " " coin-symbol " "
             [:sub (utils/format-number (* masternodes-monthly-revenue price)) currency-symbol]]]
         ]]]))
+
+(defn show-graphic [path]
+  (.json js/d3 path
+    (fn [json]
+      (let [data (map #(assoc % :date (js/Date. (* 1000 (get % "timestamp")))) (js->clj json))]
+        (.data_graphic js/MG
+          (clj->js {
+            :data data
+            :full_width true
+            :height 300
+            :target "#masternodes"
+            :yax_units "MN: "
+            :inflator 1.001
+            :min_y_from_data true
+            :x_accessor "date"
+            :y_accessor "masternodes_count"
+        }))))))
+
+(defn masternodes-history [path]
+  (r/create-class {:reagent-render (fn []
+                    [:div.panel.panel-default
+                      [:center.panel-heading "Master Nodes Last Week"]
+                      [:center.panel-body
+                        [:div#masternodes]]])
+                   :component-did-mount (fn [this] (show-graphic path))}))

@@ -49,8 +49,10 @@
             ]]]))
 
 (defn component []
-  (let [staking-pivx (r/atom 10000)]
+  (let [staking-pivx (r/atom 10000)
+        pivx-mn-history "https://318h5of2kh.execute-api.eu-west-1.amazonaws.com/dev/currency/pivx/history"]
     [:div {:class "container"}
       [:h1 {:class "page-header"} "PIVX"]
       [coin-infos/masternodes "PIVX"]
-      [staking staking-pivx]]))
+      [staking staking-pivx]
+      [coin-infos/masternodes-history pivx-mn-history]]))
