@@ -22,10 +22,12 @@ def masternodes_history(event, context):
 			'coin': coin,
 			'timestamp': int(quarter_day.strftime("%s"))
 		},
-		UpdateExpression="set masternodes_count = :m, price = :p",
+		UpdateExpression="set masternodes_count = :m, price = :p, masternodes_reward = :r, available_supply = :a",
 		ExpressionAttributeValues={
 			':m': result.get('masternodes_count'),
 			':p': result.get('price_btc'),
+			':r': result.get('masternodes_reward'),
+			':a': result.get('available_supply'),
 		},
 		ReturnValues="UPDATED_NEW"
 	)
