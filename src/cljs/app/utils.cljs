@@ -17,9 +17,10 @@
 
 (defn get-user-price
   "Take all currencies but only return the price the user have choosen"
-  [c usd eur btc]
+  [c usd eur gbp btc]
   (case c
         "USD" usd
         "EUR" eur
+        "GBP" gbp
         "BTC" btc
         "" 0))

@@ -16,7 +16,7 @@ provider:
         - dynamodb:Query
         - dynamodb:UpdateItem
         - dynamodb:Scan
-      Resource: 
+      Resource:
         - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_CURRENCIES_TABLE}"
         - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_MASTERNODES_COUNT_TABLE}"
 
@@ -29,9 +29,12 @@ functions:
           method: get
           cors: true
   transfercoin-price:
-    handler: currencies/transfercoin.price
+    handler: commons.price
     events:
       - schedule: rate(5 minutes)
+    environment:
+      COIN_ID: TransferCoin
+      COIN_TICKER: transfercoin
   transfercoin-masternodes:
     handler: currencies/transfercoin.masternodes
     events:
@@ -61,9 +64,12 @@ functions:
     environment:
       COIN_ID: TransferCoin
   pivx-price:
-    handler: currencies/pivx.price
+    handler: commons.price
     events:
       - schedule: rate(5 minutes)
+    environment:
+      COIN_ID: PIVX
+      COIN_TICKER: pivx
   pivx-masternodes:
     handler: currencies/pivx.masternodes
     events:
@@ -93,9 +99,12 @@ functions:
     environment:
       COIN_ID: PIVX
   dash-price:
-    handler: currencies/dash.price
+    handler: commons.price
     events:
       - schedule: rate(5 minutes)
+    environment:
+      COIN_ID: Dash
+      COIN_TICKER: dash
   dash-masternodes:
     handler: currencies/dash.masternodes
     events:
@@ -125,9 +134,12 @@ functions:
     environment:
       COIN_ID: Dash
   crown-price:
-    handler: currencies/crown.price
+    handler: commons.price
     events:
       - schedule: rate(5 minutes)
+    environment:
+      COIN_ID: Crown
+      COIN_TICKER: crown
   crown-masternodes:
     handler: currencies/crown.masternodes
     events:
@@ -156,6 +168,41 @@ functions:
           cors: true
     environment:
       COIN_ID: Crown
+  monetaryunit-price:
+    handler: commons.price
+    events:
+      - schedule: rate(5 minutes)
+    environment:
+      COIN_ID: MonetaryUnit
+      COIN_TICKER: monetaryunit
+  monetaryunit-masternodes:
+    handler: currencies/mue.masternodes
+    events:
+      - schedule: rate(5 minutes)
+  monetaryunit-historywrite:
+    handler: commons.masternodes_history
+    events:
+      - schedule: cron(0 0/6 * * ? *)
+    environment:
+      COIN_ID: MonetaryUnit
+  monetaryunit-get:
+    handler: queries.get
+    events:
+      - http:
+          path: currency/mue
+          method: get
+          cors: true
+    environment:
+      COIN_ID: MonetaryUnit
+  monetaryunit-historyread:
+    handler: queries.mn_count_history
+    events:
+      - http:
+          path: currency/mue/history
+          method: get
+          cors: true
+    environment:
+      COIN_ID: MonetaryUnit
 
 resources:
   Resources:
@@ -195,4 +242,3 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:provider.environment.DYNAMODB_MASTERNODES_COUNT_TABLE}
-

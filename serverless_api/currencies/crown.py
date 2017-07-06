@@ -9,30 +9,6 @@ from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
 
-def price(event, context):
-
-	url = 'https://api.coinmarketcap.com/v1/ticker/crown/?convert=EUR'
-
-	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
-
-	content = urllib2.urlopen(url).read()
-	data = json.loads(content)[0]
-
-	table.update_item(
-		Key={
-			'coin': 'Crown'
-		},
-		UpdateExpression="set price_usd = :u, price_eur = :e, price_btc = :b, available_supply = :s, symbol = :y ",
-		ExpressionAttributeValues={
-			':u': decimal.Decimal(data.get('price_usd')),
-			':e': decimal.Decimal(data.get('price_eur')),
-			':b': decimal.Decimal(data.get('price_btc')),
-			':s': decimal.Decimal(data.get('available_supply')),
-			':y': data.get('symbol'),
-		},
-		ReturnValues="UPDATED_NEW"
-	)
-
 def masternodes(event, context):
 
 	masternodes_cost = 10000

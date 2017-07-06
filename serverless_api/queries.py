@@ -22,7 +22,7 @@ def list(event, context):
 
     # fetch all todos from the database
     result = table.scan(
-		ProjectionExpression="coin, available_supply, masternodes_cost, masternodes_count, masternodes_monthly_revenue, masternodes_reward, masternodes_reward_waiting_time, price_btc, price_eur, price_usd, symbol"
+		ProjectionExpression="coin, available_supply, masternodes_cost, masternodes_count, masternodes_monthly_revenue, masternodes_reward, masternodes_reward_waiting_time, price_btc, price_eur, price_gbp, price_usd, symbol"
     )
 
     # create a response
@@ -40,7 +40,7 @@ def list(event, context):
 def get(event, context):
 
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
-	
+
 	result = table.query(
 		ProjectionExpression="#cn, available_supply, masternodes_cost, masternodes_count, masternodes_monthly_revenue, masternodes_reward, masternodes_reward_waiting_time, price_btc, price_eur, price_usd, symbol",
 		ExpressionAttributeNames={ "#cn": "coin" },
@@ -61,7 +61,7 @@ def get(event, context):
 def mn_count_history(event, context):
 
 	table = dynamodb.Table(os.environ['DYNAMODB_MASTERNODES_COUNT_TABLE'])
-	
+
 	today = int((datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1, 0, 0, 0, 0)).total_seconds())
 	last_week = today - 604800
 

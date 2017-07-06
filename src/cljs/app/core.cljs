@@ -12,6 +12,7 @@
             [pages.index :as index]
             [pages.currencies.dash :as dash-page]
             [pages.currencies.crown :as crown-page]
+            [pages.currencies.mue :as mue-page]
             [pages.currencies.pivx :as pivx-page]
             [pages.currencies.transfercoin :as transfercoin-page]))
 
@@ -40,6 +41,7 @@
   (defroute "/" [] (swap! app-state assoc :page :index))
   (defroute "/currency/crown" [] (swap! app-state assoc :page :crown-page))
   (defroute "/currency/dash" [] (swap! app-state assoc :page :dash-page))
+  (defroute "/currency/monetaryunit" [] (swap! app-state assoc :page :mue-page))
   (defroute "/currency/pivx" [] (swap! app-state assoc :page :pivx-page))
   (defroute "/currency/transfercoin" [] (swap! app-state assoc :page :transfercoin-page))
   (hook-browser-navigation!))
@@ -49,6 +51,7 @@
 (defmethod current-page :index [] [index/component])
 (defmethod current-page :crown-page [] [crown-page/component])
 (defmethod current-page :dash-page [] [dash-page/component])
+(defmethod current-page :mue-page [] [mue-page/component])
 (defmethod current-page :pivx-page [] [pivx-page/component])
 (defmethod current-page :transfercoin-page [] [transfercoin-page/component])
 (defmethod current-page :default  [] [:div])

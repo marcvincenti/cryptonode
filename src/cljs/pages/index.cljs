@@ -42,8 +42,9 @@
                    masternodes_monthly_revenue
                    price_usd
                    price_btc
+                   price_gbp
                    price_eur]} (sorted-contents)
-          :let [price (utils/get-user-price user-currency price_usd price_eur price_btc)]] ^{:key coin}
+          :let [price (utils/get-user-price user-currency price_usd price_eur price_gbp price_btc)]] ^{:key coin}
        [:tr
          [:td [:a {:href (str "#/currency/" (string/lower-case coin))} coin]]
          [:td (utils/kilo-numbers (str (int (* available_supply price)))) currency-symbol]

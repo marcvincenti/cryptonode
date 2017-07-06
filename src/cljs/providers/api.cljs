@@ -4,11 +4,12 @@
             [cljs.core.async :refer [<!]]
             [app.state :refer [app-state]]))
 
-(def cur-available ["USD" "EUR" "BTC"])
+(def cur-available ["USD" "EUR" "GBP" "BTC"])
 (defn cur-symbol [c]
   (case c
         "USD" "$"
         "EUR" "€"
+        "GBP" "£"
         "BTC" "฿"
         ""))
 
