@@ -42,7 +42,7 @@ def get(event, context):
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
 
 	result = table.query(
-		ProjectionExpression="#cn, available_supply, masternodes_cost, masternodes_count, masternodes_monthly_revenue, masternodes_reward, masternodes_reward_waiting_time, price_btc, price_eur, price_usd, symbol",
+		ProjectionExpression="#cn, available_supply, masternodes_cost, masternodes_count, masternodes_monthly_revenue, masternodes_reward, masternodes_reward_waiting_time, price_btc, price_eur, price_usd, price_gbp, symbol",
 		ExpressionAttributeNames={ "#cn": "coin" },
 		KeyConditionExpression=Key("coin").eq(os.environ['COIN_ID'])
 	)
