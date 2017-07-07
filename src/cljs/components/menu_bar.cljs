@@ -17,8 +17,8 @@
   [:div.collapse.navbar-collapse {:id "bs-example-navbar-collapse-1"}
 
     [:ul.nav.navbar-nav
-      [:li [:a {:target "_blank" :href "https://docs.google.com/forms/d/e/1FAIpQLSdzlYN3CGdHr-qRdH5IVmbeTFDsRenDQ36EhrSpSXYgRYxsVw/viewform"} "API " [:sub "beta"]]]
       [:li [:a {:target "_blank" :href "https://docs.google.com/forms/d/1_NUGLWjWjujyYGiTylLmlyBa-BSvens6tKCsPSGUxR8/viewform"} "Masternode Hosting " [:sub "beta"]]]
+      [:li [:a {:target "_blank" :href "https://docs.google.com/forms/d/e/1FAIpQLScNij_Tgc2uDns2PHsw28ULgII4ukMRaUAv8j3qffbtL0KyUA/viewform"} "Request"]]
       ;[:li (active? :about) [:a {:href "#/about"} "About"]]
       ]
 
