@@ -203,6 +203,41 @@ functions:
           cors: true
     environment:
       COIN_ID: MonetaryUnit
+  bitsend-price:
+    handler: commons.price
+    events:
+      - schedule: rate(5 minutes)
+    environment:
+      COIN_ID: BitSend
+      COIN_TICKER: bitsend
+  bitsend-masternodes:
+    handler: currencies/bitsend.masternodes
+    events:
+      - schedule: rate(5 minutes)
+  bitsend-historywrite:
+    handler: commons.masternodes_history
+    events:
+      - schedule: cron(0 0/6 * * ? *)
+    environment:
+      COIN_ID: BitSend
+  bitsend-get:
+    handler: queries.get
+    events:
+      - http:
+          path: currency/bitsend
+          method: get
+          cors: true
+    environment:
+      COIN_ID: BitSend
+  bitsend-historyread:
+    handler: queries.mn_count_history
+    events:
+      - http:
+          path: currency/bitsend/history
+          method: get
+          cors: true
+    environment:
+      COIN_ID: BitSend
 
 resources:
   Resources:
