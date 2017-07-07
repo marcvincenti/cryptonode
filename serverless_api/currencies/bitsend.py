@@ -19,12 +19,10 @@ def masternodes(event, context):
 
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
 
-	req = urllib2.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-	content = urllib2.urlopen(req).read()
-	data = json.loads(content)
-	pattern=re.compile(r'([^<]+) / ')
-
-	masternodes_count = int(re.findall(pattern, data.get('masternodes')).pop())
+	url = 'https://www.mybitsend.com/list.txt'
+	content = urllib2.urlopen(url).read()
+	
+	masternodes_count = content.count('ENABLED')
 	masternodes_monthly_revenue = float(blocks_per_month * masternodes_reward) / float(masternodes_count)
 	masternodes_reward_waiting_time = float(masternodes_count) / float(blocks_per_day)
 
