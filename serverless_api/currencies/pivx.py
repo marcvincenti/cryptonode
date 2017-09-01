@@ -18,11 +18,12 @@ def masternodes(event, context):
 	url = 'http://178.254.23.111/~pub/DN/DN_masternode_payments_stats.html'
 
 	table = dynamodb.Table(os.environ['DYNAMODB_CURRENCIES_TABLE'])
-
-	content = urllib2.urlopen(url).read().split('\n')
-	pattern=re.compile(r'<b[^>]*> ([^<]+) </b>')
-	masternodes_count = int(re.findall(pattern, content[27]).pop())
-	available_supply = int(re.findall(pattern, content[37]).pop())
+	
+	content = urllib2.urlopen(url).read()
+	pattern_mn = re.compile(r'Current Number of Masternodes: <b[^>]*> ([^<]+) </b>')
+	pattern_supp = re.compile(r'Available Supply: <b[^>]*> ([^<]+) </b>')
+	masternodes_count = int(re.findall(pattern_mn, content).pop())
+	available_supply = int(re.findall(pattern_supp, content).pop())
 	masternodes_rate = (float(masternodes_count) * 10000) / float(available_supply)
 
 	if masternodes_rate <= 0.01 : masternodes_reward = block_reward * 0.90
