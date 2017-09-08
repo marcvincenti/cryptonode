@@ -21,7 +21,7 @@
     [:table.table [:tbody
       [:tr [:th.col-sm-6 "Actual Coin Supply"]
         [:td (-> (get data :available_supply)
-                 (int)
+                 (Math/round)
                  (str)
                  (utils/kilo-numbers)) " " coin-symbol]]
         [:tr [:th "Number of Masternodes"]
@@ -30,7 +30,7 @@
                   (utils/kilo-numbers))]]
         [:tr [:th "Masternode Cost"]
           [:td (-> masternodes-cost
-                  (int)
+                  (Math/round)
                   (str)
                   (utils/kilo-numbers)) " " coin-symbol " "
             [:sub (utils/format-number (* masternodes-cost price)) currency-symbol]]]

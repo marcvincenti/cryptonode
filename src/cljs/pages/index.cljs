@@ -47,7 +47,7 @@
           :let [price (utils/get-user-price user-currency price_usd price_eur price_gbp price_btc)]] ^{:key coin}
        [:tr
          [:td [:a {:href (str "#/currency/" (string/lower-case coin))} coin]]
-         [:td (utils/kilo-numbers (str (int (* available_supply price)))) currency-symbol]
+         [:td (utils/kilo-numbers (str (Math/round (* available_supply price)))) currency-symbol]
          [:td (utils/format-number (* masternodes_cost price)) currency-symbol]
          [:td (utils/format-number (* masternodes_monthly_revenue price)) currency-symbol]
          [:td (utils/format-number (* 100 (/ masternodes_monthly_revenue masternodes_cost)))"%"]])]]))

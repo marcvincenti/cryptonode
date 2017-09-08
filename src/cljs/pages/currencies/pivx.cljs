@@ -32,7 +32,7 @@
       [:table.table [:tbody
         [:tr [:th.col-sm-6 "Staked PIVX"]
           [:td (-> @nb-pivx
-                   (int)
+                   (Math/round)
                    (str)
                    (utils/kilo-numbers)) " PIVX "
             [:sub (utils/format-number (* @nb-pivx price)) currency-symbol]]]
