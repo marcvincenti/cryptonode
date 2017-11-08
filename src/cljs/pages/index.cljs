@@ -40,6 +40,7 @@
                    available_supply
                    masternodes_cost
                    masternodes_monthly_revenue
+                   masternodes_count
                    price_usd
                    price_btc
                    price_gbp
@@ -49,8 +50,8 @@
          [:td [:a {:href (str "#/currency/" (string/lower-case coin))} coin]]
          [:td (utils/kilo-numbers (str (Math/round (* available_supply price)))) currency-symbol]
          [:td (utils/format-number (* masternodes_cost price)) currency-symbol]
-         [:td (utils/format-number (* masternodes_monthly_revenue price)) currency-symbol]
-         [:td (utils/format-number (* 100 (/ masternodes_monthly_revenue masternodes_cost)))"%"]])]]))
+         [:td (if masternodes_count (str (utils/format-number (* masternodes_monthly_revenue price)) currency-symbol) "Unknown")]
+         [:td (if masternodes_count (str (utils/format-number (* 100 (/ masternodes_monthly_revenue masternodes_cost)))"%") "Unknown")]])]]))
 
 (defn component []
   [:div.container

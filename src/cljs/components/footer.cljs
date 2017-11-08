@@ -9,4 +9,4 @@
              [:a {:href "mailto:hello@cryptonode.co" :target "_blank"}
                   "hello@cryptonode.co"]]
         [:p.navbar-text.pull-right "Donate BTC: "
-             [:b "3N1M9d4DuWHgoZ78bSjhYK9SqfKtCjxybc"]]]]])
+             [:b "3L91uVxkWFMHq33FUbCSh28uhrdwWeo7LZ"]]]]])

@@ -9,6 +9,7 @@
             [components.menu-bar :as menu-bar]
             [components.footer :as footer]
             [providers.api :as api]
+            [pages.no-masternodes :as no-mn-page]
             [pages.index :as index]
             [pages.currencies.bitsend :as bitsend-page]
             [pages.currencies.dash :as dash-page]
@@ -41,6 +42,7 @@
   (secretary/set-config! :prefix "#")
   (defroute "/" [] (swap! app-state assoc :page :index))
   (defroute "/currency/bitsend" [] (swap! app-state assoc :page :bitsend-page))
+  (defroute "/currency/chaincoin" [] (swap! app-state assoc :page :chaincoin-page))
   (defroute "/currency/crown" [] (swap! app-state assoc :page :crown-page))
   (defroute "/currency/dash" [] (swap! app-state assoc :page :dash-page))
   (defroute "/currency/monetaryunit" [] (swap! app-state assoc :page :mue-page))
@@ -52,6 +54,7 @@
 (defmulti current-page #(@app-state :page))
 (defmethod current-page :index [] [index/component])
 (defmethod current-page :bitsend-page [] [bitsend-page/component])
+(defmethod current-page :chaincoin-page [] [no-mn-page/component "ChainCoin"])
 (defmethod current-page :crown-page [] [crown-page/component])
 (defmethod current-page :dash-page [] [dash-page/component])
 (defmethod current-page :mue-page [] [mue-page/component])
