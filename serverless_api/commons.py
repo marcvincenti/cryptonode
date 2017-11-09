@@ -46,19 +46,32 @@ def price(event, context):
 	url_gbp = 'https://api.coinmarketcap.com/v1/ticker/'+ticker+'/?convert=GBP'
 	content_gbp = urllib2.urlopen(url_gbp).read()
 	data_gbp = json.loads(content_gbp)[0]
-
-	table.update_item(
-		Key={
-			'coin': coin
-		},
-		UpdateExpression="set price_usd = :u, price_eur = :e, price_btc = :b, price_gbp = :g, available_supply = :s, symbol = :y ",
-		ExpressionAttributeValues={
+	
+	_updateExpression = 'set price_usd = :u, price_eur = :e, price_btc = :b, price_gbp = :g, available_supply = :s, symbol = :y';
+	_expressionAttributeValues={
 			':u': decimal.Decimal(data_eur.get('price_usd')),
 			':e': decimal.Decimal(data_eur.get('price_eur')),
 			':b': decimal.Decimal(data_eur.get('price_btc')),
 			':g': decimal.Decimal(data_gbp.get('price_gbp')),
 			':s': decimal.Decimal(data_eur.get('available_supply')),
 			':y': data_eur.get('symbol'),
-		},
+		}
+	
+	if 'MN_COST' in os.environ:
+		_updateExpression = _updateExpression + ', masternodes_cost = :c'
+		_expressionAttributeValues[':c'] = decimal.Decimal(os.environ['MN_COST'])
+	
+	if 'MN_REWARD' in os.environ:
+		_updateExpression = _updateExpression + ', masternodes_reward = :r'
+		_expressionAttributeValues[':r'] = decimal.Decimal(os.environ['MN_REWARD'])
+	
+	if 'BLOCKS_A_DAY' in os.environ:
+		_updateExpression = _updateExpression + ', blocks_per_day = :d'
+		_expressionAttributeValues[':d'] = decimal.Decimal(os.environ['BLOCKS_A_DAY'])
+
+	table.update_item(
+		Key={'coin': coin},
+		UpdateExpression=_updateExpression,
+		ExpressionAttributeValues=_expressionAttributeValues,
 		ReturnValues="UPDATED_NEW"
 	)

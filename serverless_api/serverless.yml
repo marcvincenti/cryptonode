@@ -38,7 +38,7 @@ functions:
   transfercoin-masternodes:
     handler: currencies/transfercoin.masternodes
     events:
-      - schedule: rate(5 minutes)
+      - schedule: rate(15 minutes)
   transfercoin-historywrite:
     handler: commons.masternodes_history
     events:
@@ -73,7 +73,7 @@ functions:
   pivx-masternodes:
     handler: currencies/pivx.masternodes
     events:
-      - schedule: rate(5 minutes)
+      - schedule: rate(15 minutes)
   pivx-historywrite:
     handler: commons.masternodes_history
     events:
@@ -108,20 +108,11 @@ functions:
   dash-masternodes:
     handler: currencies/dash.masternodes
     events:
-      - schedule: rate(10 minutes)
+      - schedule: rate(15 minutes)
   dash-historywrite:
     handler: commons.masternodes_history
     events:
       - schedule: cron(0 0/6 * * ? *)
-    environment:
-      COIN_ID: Dash
-  dash-get:
-    handler: queries.get
-    events:
-      - http:
-          path: currency/dash
-          method: get
-          cors: true
     environment:
       COIN_ID: Dash
   dash-historyread:
@@ -143,20 +134,11 @@ functions:
   crown-masternodes:
     handler: currencies/crown.masternodes
     events:
-      - schedule: rate(5 minutes)
+      - schedule: rate(15 minutes)
   crown-historywrite:
     handler: commons.masternodes_history
     events:
       - schedule: cron(0 0/6 * * ? *)
-    environment:
-      COIN_ID: Crown
-  crown-get:
-    handler: queries.get
-    events:
-      - http:
-          path: currency/crown
-          method: get
-          cors: true
     environment:
       COIN_ID: Crown
   crown-historyread:
@@ -178,20 +160,11 @@ functions:
   monetaryunit-masternodes:
     handler: currencies/mue.masternodes
     events:
-      - schedule: rate(5 minutes)
+      - schedule: rate(15 minutes)
   monetaryunit-historywrite:
     handler: commons.masternodes_history
     events:
       - schedule: cron(0 0/6 * * ? *)
-    environment:
-      COIN_ID: MonetaryUnit
-  monetaryunit-get:
-    handler: queries.get
-    events:
-      - http:
-          path: currency/mue
-          method: get
-          cors: true
     environment:
       COIN_ID: MonetaryUnit
   monetaryunit-historyread:
@@ -213,20 +186,11 @@ functions:
   bitsend-masternodes:
     handler: currencies/bitsend.masternodes
     events:
-      - schedule: rate(5 minutes)
+      - schedule: rate(15 minutes)
   bitsend-historywrite:
     handler: commons.masternodes_history
     events:
       - schedule: cron(0 0/6 * * ? *)
-    environment:
-      COIN_ID: BitSend
-  bitsend-get:
-    handler: queries.get
-    events:
-      - http:
-          path: currency/bitsend
-          method: get
-          cors: true
     environment:
       COIN_ID: BitSend
   bitsend-historyread:
@@ -238,6 +202,16 @@ functions:
           cors: true
     environment:
       COIN_ID: BitSend
+  chaincoin-price:
+    handler: commons.price
+    events:
+      - schedule: rate(5 minutes)
+    environment:
+      COIN_ID: ChainCoin
+      COIN_TICKER: chaincoin
+      MN_COST: 1000
+      MN_REWARD: 3.6
+      BLOCKS_A_DAY: 960
 
 resources:
   Resources:
