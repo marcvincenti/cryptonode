@@ -21,9 +21,9 @@ def masternodes(event, context):
 
 	content = urllib2.urlopen(url).read().split('\n')
 	pattern=re.compile(r'<b[^>]*> ([^<]+) </b>')
-	block_number = re.findall(pattern, content[23]).pop()
-	block_difficulty = re.findall(pattern, content[24]).pop()
-	masternodes_count = int(re.findall(pattern, content[26]).pop())
+	block_number = re.findall(pattern, content[21]).pop()
+	block_difficulty = re.findall(pattern, content[22]).pop()
+	masternodes_count = int(re.findall(pattern, content[24]).pop())
 	years_elapsed = int(float(block_number) / blocks_per_year)
 
 	reward = int(2222222.0/pow(((float(block_difficulty)+2600.0)/9.0),2.0));
